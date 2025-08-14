@@ -92,7 +92,6 @@ cython_debug/
 
 # --- Django ---
 *.log
-db.sqlite3
 db.sqlite3-journal
 /media/ # If you store user-uploaded media locally and don't want to commit it
 
