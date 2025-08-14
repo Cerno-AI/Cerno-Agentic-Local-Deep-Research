@@ -137,7 +137,7 @@ After applying migrations, follow these steps to configure your environment and 
 
 ---
 
-## 🐳 Docker Installation (Currently not working, please use git clone for now)
+## 🐳 Docker Installation
 
 Prefer containerized workflows? Follow these steps:
 
