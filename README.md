@@ -105,7 +105,7 @@ After applying migrations, follow these steps to configure your environment and 
    cp .env.example .env
    ```
 
-   Creates a fresh `.env` file. Open it and fill in your API keys (e.g., `OPENAI_API_KEY`, `GEMINI_API_KEY`) or local model settings for Ollama. 
+   Creates a fresh `.env` file. Open it and fill in your API keys (e.g., `OPENAI_API_KEY`, `GEMINI_API_KEY`) or local model settings for Ollama. IF you want to use OLLAMA with the latest GPT OSS model, use USE_OLLAMA true flag in the .env.
 
    For now, we only support OpenAI, Gemini, Anthropic, Deepseek and local models on Ollama **that support tool calling**, but support for more models is coming in the next release.
 
