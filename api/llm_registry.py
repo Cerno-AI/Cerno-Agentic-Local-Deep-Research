@@ -99,7 +99,7 @@ def discover_deepseek_models():
 @lru_cache(maxsize=1)
 def discover_ollama_models():
     
-    default_ollama_host = "http://localhost:11434"
+    default_ollama_host = "http://host.docker.internal:11434"
     host = os.getenv("OLLAMA_HOST", default_ollama_host)
     if not host: return []
     
@@ -114,8 +114,12 @@ def discover_ollama_models():
         for model_info in models_data:
             full_name = model_info.get("name")
             if full_name:
-                model_id = full_name.split(':')[0]
-                display_name = model_id.replace('-', ' ').title()
+                model_id = full_name  # Use the full name including the tag
+                base_name = full_name.split(':')[0]
+                display_name = base_name.replace('-', ' ').title()
+                if ':' in full_name:
+                    tag = full_name.split(':')[1]
+                    display_name = f"{display_name} ({tag})"
                 if not any(m.id == model_id for m in discovered_models):
                     discovered_models.append(ModelInfo("Ollama", model_id, display_name))
         return discovered_models
@@ -154,6 +158,7 @@ def get_available_models_grouped():
     """
     This is the single source of truth for the model list.
     It loads static cloud models and merges them with live Ollama models.
+    Ollama models are placed first in the list when available.
     """
     
     grouped_models = load_static_cloud_models()
@@ -167,6 +172,14 @@ def get_available_models_grouped():
     except Exception as e:
         print(f"Could not dynamically fetch Ollama models. They will not be available. Error: {e}")
 
+    # Reorder the dictionary to put Ollama first if it exists
+    if "Ollama" in grouped_models:
+        reordered_models = {"Ollama": grouped_models["Ollama"]}
+        for provider, models in grouped_models.items():
+            if provider != "Ollama":
+                reordered_models[provider] = models
+        return reordered_models
+    
     return grouped_models
 
 def get_llm_instance(model_id: str, provider: str):

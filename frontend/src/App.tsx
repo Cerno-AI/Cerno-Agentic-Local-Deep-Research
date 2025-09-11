@@ -1,4 +1,4 @@
-import {useState, useEffect, useCallback, useRef} from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import './App.css';
 
@@ -43,15 +43,24 @@ const AiWorkspaceLayout: React.FC = () => {
         }
         const data: GroupedModels = await response.json();
         setAvailableModels(data);
-        const preferredDefaultModel = "gemini-2.5-flash-preview-05-20";
+
         let defaultModelSet = false;
 
         if (data) {
-          for (const provider in data) {
-            if (data[provider].some(model => model.id === preferredDefaultModel)) {
-              setSelectedModelId(preferredDefaultModel);
-              defaultModelSet = true;
-              break;
+          // First, check if Ollama models are available and use the first one as default
+          if (data['Ollama'] && data['Ollama'].length > 0) {
+            setSelectedModelId(data['Ollama'][0].id);
+            defaultModelSet = true;
+            console.log(`Using first Ollama model as default: ${data['Ollama'][0].id}`);
+          } else {
+            // Fallback to the preferred cloud model
+            const preferredDefaultModel = "gemini-2.5-flash-preview-05-20";
+            for (const provider in data) {
+              if (data[provider].some(model => model.id === preferredDefaultModel)) {
+                setSelectedModelId(preferredDefaultModel);
+                defaultModelSet = true;
+                break;
+              }
             }
           }
         }
@@ -60,7 +69,7 @@ const AiWorkspaceLayout: React.FC = () => {
           const firstProvider = Object.keys(data)[0];
           if (data[firstProvider] && data[firstProvider].length > 0) {
             setSelectedModelId(data[firstProvider][0].id);
-            console.warn(`Preferred default model '${preferredDefaultModel}' not found. Falling back to '${data[firstProvider][0].id}'.`);
+            console.warn(`No preferred models found. Falling back to '${data[firstProvider][0].id}'.`);
           }
         }
       } catch (error) {
@@ -112,7 +121,7 @@ const AiWorkspaceLayout: React.FC = () => {
     cleanupEventSource("handleNewTask (session change)");
     const newSessionId = `s${Date.now()}`;
     const newSession: Session = { id: newSessionId, name: "New Task...", active: true, status: 'pending' };
-    setSessions(prev => [ ...prev.map(s => ({ ...s, active: false })), newSession ]);
+    setSessions(prev => [...prev.map(s => ({ ...s, active: false })), newSession]);
     setCurrentSessionId(newSessionId);
     setMessages([]);
     setArtifacts([]);
@@ -192,67 +201,67 @@ const AiWorkspaceLayout: React.FC = () => {
   };
   console.log("[App.tsx] Rendering. fileToAutoOpen is:", fileToAutoOpen, " | refreshKey is:", fileListRefreshTrigger);
   return (
-      <div className="app-container">
-        <LeftSideBar
-            isExpanded={isSidebarExpanded}
-            onToggle={handleToggleSidebar}
-            sessions={sessions}
-            currentSessionId={currentSessionId}
-            onNewTask={handleNewTask}
-            onSelectSession={handleSelectSession}
-        />
-        <MainChatWindow
-            messages={messages}
-            onSendMessage={handleSendMessage}
-            onStopRequest={handleStopRequest}
-            isTaskRunning={isTaskRunning}
-            currentTaskName={sessions.find(s => s.id === currentSessionId)?.name || "AI Agent Workspace"}
-            onToggleRightPanel={handleToggleRightPanel}
-            isRightPanelVisible={isRightPanelVisible}
-            effectiveRightPanelWidth={rightPanelWidth}
-            availableModels={availableModels}
-            selectedModelId={selectedModelId}
-            onModelChange={setSelectedModelId}
-            isLoadingModels={isLoadingModels}
-        />
-        <AnimatePresence>
-          {isRightPanelVisible && (
-              <motion.div
-                  key="right-panel-wrapper"
-                  className="right-panel-motion-wrapper-absolute"
-                  variants={rightPanelMotionVariants}
-                  initial="hidden"
-                  animate="visible"
-                  exit="hidden"
-                  style={{ width: `${rightPanelWidth}px` }}
-              >
-                <RightPanel
-                    onClose={handleToggleRightPanel}
-                    artifacts={artifacts}
-                    onResize={handleRightPanelResize}
-                    initialWidth={rightPanelWidth}
-                    refreshKey={fileListRefreshTrigger}
-                    fileToAutoOpen={fileToAutoOpen}
-                    onAutoOpenDone={() => {
-                      console.log("[App.tsx] Resetting fileToAutoOpen to null.");
-                      setFileToAutoOpen(null);
-                    }}
-                />
-              </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
+    <div className="app-container">
+      <LeftSideBar
+        isExpanded={isSidebarExpanded}
+        onToggle={handleToggleSidebar}
+        sessions={sessions}
+        currentSessionId={currentSessionId}
+        onNewTask={handleNewTask}
+        onSelectSession={handleSelectSession}
+      />
+      <MainChatWindow
+        messages={messages}
+        onSendMessage={handleSendMessage}
+        onStopRequest={handleStopRequest}
+        isTaskRunning={isTaskRunning}
+        currentTaskName={sessions.find(s => s.id === currentSessionId)?.name || "AI Agent Workspace"}
+        onToggleRightPanel={handleToggleRightPanel}
+        isRightPanelVisible={isRightPanelVisible}
+        effectiveRightPanelWidth={rightPanelWidth}
+        availableModels={availableModels}
+        selectedModelId={selectedModelId}
+        onModelChange={setSelectedModelId}
+        isLoadingModels={isLoadingModels}
+      />
+      <AnimatePresence>
+        {isRightPanelVisible && (
+          <motion.div
+            key="right-panel-wrapper"
+            className="right-panel-motion-wrapper-absolute"
+            variants={rightPanelMotionVariants}
+            initial="hidden"
+            animate="visible"
+            exit="hidden"
+            style={{ width: `${rightPanelWidth}px` }}
+          >
+            <RightPanel
+              onClose={handleToggleRightPanel}
+              artifacts={artifacts}
+              onResize={handleRightPanelResize}
+              initialWidth={rightPanelWidth}
+              refreshKey={fileListRefreshTrigger}
+              fileToAutoOpen={fileToAutoOpen}
+              onAutoOpenDone={() => {
+                console.log("[App.tsx] Resetting fileToAutoOpen to null.");
+                setFileToAutoOpen(null);
+              }}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
   );
 };
 
 function App() {
   return (
-      <Router>
-        <Routes>
-          <Route path="/" element={<AiWorkspaceLayout />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </Router>
+    <Router>
+      <Routes>
+        <Route path="/" element={<AiWorkspaceLayout />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </Router>
   );
 }
 
