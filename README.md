@@ -16,18 +16,15 @@ Cerno is an open-source workspace for conducting **deep**, **multi-step** resear
 2. [Local-First Principles](#-local-first-principles)
 3. [Active Development & Community](#️-active-development--community)
 4. [Prerequisites](#-prerequisites)
-5. [Getting Started](#-getting-started-local-cli)
-6. [Post-Migration Setup](#-post-migration-setup)
-6. [Docker Installation](#docker-installation)
-8. [CLI Reference](#️-cli-reference)
-9. [Project Structure](#-project-structure)
-10. [Screenshots](#-screenshots)
-11. [Use Cases](#-use-cases)
-12. [Roadmap](#-roadmap)
-13. [Security & Privacy](#-security--privacy)
-14. [Metrics & Benchmarks](#-metrics--benchmarks)
-15. [Contributing](#-contributing)
-16. [License](#-license)
+5. [Docker Installation](#-docker-installation)
+6. [CLI Reference](#️-cli-reference)
+7. [Project Structure](#-project-structure)
+8. [Screenshots](#-screenshots)
+9. [Use Cases](#-use-cases)
+10. [Roadmap](#-roadmap)
+11. [Security & Privacy](#-security--privacy)
+12. [Contributing](#-contributing)
+13. [License](#-license)
 
 ---
 
@@ -71,77 +68,12 @@ Let’s build something amazing together! 🚀
 
 ---
 
-## 🚀 Getting Started (Local CLI)
-
-1. **Clone the repo** (or download the repo)
-
-   ```bash
-   git clone https://github.com/divagr18/Cerno-Agentic-Local-Deep-Research.git
-   cd Cerno-Agentic-Local-Deep-Research
-   ```
-
-2. **Run Migrations**
-
-   ```bash
-   # macOS/Linux
-   chmod +x cerno
-   ./cerno migrate
-   #for detailed logs
-   ./cerno migrate --verbose  
-
-   # Windows
-   .\cerno migrate
-   #for detailed logs
-   .\cerno migrate --verbose
-   ```
-
-3. **Post-Migration Setup**
-
-After applying migrations, follow these steps to configure your environment and launch Cerno:
-
-1. **Copy the `.env` template**
-
-   ```bash
-   cp .env.example .env
-   ```
-
-   Creates a fresh `.env` file. Open it and fill in your API keys (e.g., `OPENAI_API_KEY`, `GEMINI_API_KEY`) or local model settings for Ollama. IF you want to use OLLAMA with the latest GPT OSS model, use USE_OLLAMA true flag in the .env.
-
-   For now, we only support OpenAI, Gemini, Anthropic, Deepseek and local models on Ollama **that support tool calling**, but support for more models is coming in the next release.
-
-
-2. **Activate the virtual environment**
-
-   ```bash
-   venv\Scripts\activate   # Windows PowerShell/CMD  
-   source venv/bin/activate    # macOS/Linux
-   ```
-
-   Ensures that Cerno’s dependencies and CLI are available in your current shell.
-
-3. **Start Cerno**
-
-   ```bash
-   cerno start
-   ```
-
-   Launches both the Django backend and the React frontend. Once running, open [http://localhost:5173](http://localhost:5173) in your browser.
-
-4. **List all commands**
-
-   ```bash
-   cerno --help
-   ```
-
-   Displays all available CLI commands and options.
-
----
-
 ## 🐳 Docker Installation
 
-Prefer containerized workflows? Follow these steps:
+Docker is the official method of installation for Cerno Deep Research.
+To use Cerno, follow the steps below:
 
-1. Clone and set up `.env` as above.
+1. Clone and set up `.env` using the example `.env.example`.
 2. Build and launch with Docker Compose:
 
    ```bash
@@ -151,17 +83,6 @@ Prefer containerized workflows? Follow these steps:
 
 ---
 
-## 🛠️ CLI Reference
-
-| Command                     | Description                         |
-|-----------------------------|-------------------------------------|
-| `cerno --help`              | Show all commands and usage details |
-| `cerno setup`               | Re-run the full automated setup     |
-| `cerno migrate`             | Apply database migrations           |
-| `cerno start`               | Launch backend & frontend           |
-| `cerno start --no-frontend` | Launch only the Django backend      |
-
----
 
 ## 📁 Project Structure
 
